@@ -1,8 +1,19 @@
 import jsonwebtoken from 'jsonwebtoken';
 
-import { loginSchema, logoutSchema, registerSchema } from '../utils/pipe/user.js';
+import { loginSchema, registerSchema } from '../utils/pipe/user.js';
 import { sha256Hash } from '../utils/hash.js';
 import config from '../config.js';
+
+const sign = (payload) => {
+  const token = jsonwebtoken.sign(payload, config.SECRET_KEY.TOKEN, {
+    expiresIn: '2h',
+  });
+  const refresh_token = jsonwebtoken.sign(payload, config.SECRET_KEY.TOKEN, {
+    expiresIn: '1d',
+  });
+
+  return { token, refresh_token }
+}
 
 /**
  * @type {Custom.Controller<"login">}
@@ -30,11 +41,7 @@ export default {
       username: user.username,
     };
 
-    const token = jsonwebtoken.sign(payload, config.SECRET_KEY.TOKEN, {
-      expiresIn: '7d',
-    });
-
-    ctx.success({ ...payload, token });
+    ctx.success({ ...payload, ...sign(payload) });
     await next();
   },
   async register(ctx, next) {
@@ -57,8 +64,33 @@ export default {
     await next();
   },
   async logout(ctx, next) {
-    const { userId } = await logoutSchema.validateAsync(ctx.request.body);
-    // 接收user.id使token过期
+    // 让token和refresh_token都过期
+    await next();
+  },
+  async authorization(ctx, next) {
+    console.log('authorization')
+    // 验证refresh——token是否过期
+    let oldToken = ctx.request.headers["authorization"];
+
+    if (oldToken) {
+      oldToken = oldToken.split(' ')[1]
+      jsonwebtoken.verify(oldToken, config.SECRET_KEY.TOKEN, (err) => {
+        if(err && err.name === "TokenExpiredError") ctx.fail('长时间未登录，请重新登陆', 403)
+      });
+    }
+    
+    // 签发新token
+    const { id } = ctx.state.user;
+    const user = await ctx.model.User.findOne({
+      where: { id },
+    });
+
+    const payload = {
+      id: user.id,
+      username: user.username,
+    };
+
+    ctx.success(sign(payload));
     await next();
   }
 };

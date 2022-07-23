@@ -16,10 +16,3 @@ export const registerSchema = Joi.object({
 });
 
 export const loginSchema = registerSchema.append();
-
-export const logoutSchema = Joi.object({
-  userId: Joi.number()
-    .min(0)
-    .required()
-    .error(Error('body-userId是数字类型的最小值为0的必需参数')),
-});

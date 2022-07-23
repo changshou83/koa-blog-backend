@@ -69,7 +69,7 @@ export default {
     const url = article.headImg;
     
     const userIdIsEqual = user_id === article.UserId;
-    if (!userIdIsEqual) return ctx.fail('该用户无权限更新此文章', 401);
+    if (!userIdIsEqual) return ctx.fail('该用户无权限更新此文章', 403);
     
     await article.update(newInfo);
     if(article.headImg !== url) await deleteImage(url);
@@ -86,7 +86,7 @@ export default {
     const url = article.headImg;
 
     const userIdIsEqual = user_id === article.UserId;
-    if (!userIdIsEqual) return ctx.fail('该用户无权限删除此文章', 401);
+    if (!userIdIsEqual) return ctx.fail('该用户无权限删除此文章', 403);
     
     await article.destroy();
     await deleteImage(url);
