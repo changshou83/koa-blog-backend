@@ -1,0 +1,9 @@
+# Dependency directories
+node_modules/
+
+# Logs
+logs
+.pnpm-debug.log*
+
+# config
+src/config.js

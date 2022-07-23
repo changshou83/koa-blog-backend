@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "koa-blog",
+    "script": "./bin/www.js",
+    "cwd": "./",
+    "watch": false,
+    "ignore_watch": [
+      "node_modules",
+      "public",
+      "logs"
+    ],
+    "exec_mode": "cluster_mode",
+    "instances": "max",
+    "min_uptime": "60s",
+    "max_restarts": 10,
+    "restart_delay": "60",
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "env_dev": {
+      "NODE_ENV": "development"
+    }
+  }
+}

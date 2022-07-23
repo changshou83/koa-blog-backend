@@ -1,0 +1,14 @@
+{
+  "server": {
+    "port": 3001,
+    "MODEL": {
+      "dialect": "mysql",
+      "database": "koa-blog",
+      "username": "root",
+      "password": "dm15640071419",
+      "host": "localhost",
+      "timezone": "+8:00",
+      "logging": false
+    }
+  }
+}
