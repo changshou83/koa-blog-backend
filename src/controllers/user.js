@@ -63,10 +63,6 @@ export default {
     });
     await next();
   },
-  async logout(ctx, next) {
-    // 让token和refresh_token都过期
-    await next();
-  },
   async authorization(ctx, next) {
     // 验证refresh——token是否过期
     let oldToken = ctx.request.headers["authorization"];
