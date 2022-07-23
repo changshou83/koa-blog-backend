@@ -68,7 +68,6 @@ export default {
     await next();
   },
   async authorization(ctx, next) {
-    console.log('authorization')
     // 验证refresh——token是否过期
     let oldToken = ctx.request.headers["authorization"];
 
